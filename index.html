@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Rampart+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/20adcc27b8.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="appShell">
+        <!-- =================LEFT NAV================= -->
+         <aside class="leftSideBar">
+            <div class="brand">
+                <h1 class="logo">
+                    CLIQUE
+                </h1>
+                <button class="openSidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <button class="createBttn" id="createBttn">
+                <i class="fa-regular fa-calendar-plus"></i>
+                <span>Make Plans</span>
+            </button>
+            <nav class="nav">
+                <a class="nav-link" href="#dashBoard"> Dashboard</a>
+                <button class="nav-Group" type="button" data-collapse="plans">
+                    Plans <span class="downArrow">^</span>
+                </button>
+                <div class="nav-group-items" id="collapse-plans">
+                    <a class="nav-sublink" href="#current-plans">Current</a>
+                    <a class="nav-sublink" href="#pending-plans">Pending</a>
+                  </div>
+                  <a class="nav-link" href="#calendar">Calendar</a>
+                  <a class="nav-linkl" href="#setting">Setting</a>
+            </nav>
+         </aside>
+         <!-- =================DASHBOARD================= -->
+         <main class="main">
+            <section id="dashboard" class="section">
+                <div class="container">
+                    <div class="statsContainer">
+                       <div class="details">
+                             <h2>
+                               Current Plans
+                             </h2>
+                             <p>Party Confirmed</p>
+                             <div id="progressBar">
+                                 <div class="progressFill"></div>
+                             </div>
+                         </div>
+                         <div class="progressRing">
+                             <p id="numbers">
+                                 2/3
+                             </p>
+                         </div>
+                     </div> 
+                 </div>
+            </section>
+            <!-- =================ADD PEOPLE INPUT================= -->
+            <section id="addPeople" class="section">
+                <form class="inviteForm">
+                    <input type="text" name="" id="todo-input" placeholder="who pullling up">
+                    <button type="submit" id="todo-button">
+                        Invite
+            
+                    </button>
+                </form>
+                <!-- <div id="mainContainer">
+                    <div class="todoContainer">
+                        <ul class="toDos"> 
+                            <li>
+                                <div class="buttonContainer">
+                                    <button class="iconButton">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="iconButton">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>              
+                                   
+                                </div>
+                                
+                            </li>
+                        </ul>
+                    </div>
+                </div> -->
+                <div id="taskUpdate">
+                    <div class="applyBttn">
+                        <button type="submit" class="checkBttn"> Confirm </button>
+                    </div>
+                    <div class="clearTask">
+                        <button type="submit" class="clearBttn"> Not Going </button>
+                    </div>
+                </div>        
+            </section>
+            <!-- =================CALENDAR================= -->
+            <section id="calendar" class="section">
+                <div class="wklyTask">
+                    <h4>WEEKLY TASKS</h4>     
+                </div>
+                <div class="calendar">
+                    <nav class="calendar-header">
+                        <button id="prevMonth" class="calendarButton">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <h2  id="monthLabel">November</h2>    
+                        <button id="nextMonth" class="calendarButton">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>            
+                    </nav>
+                    <div class="weekdayRow">
+                        <span>Sun</span>
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                    </div>
+                    <div id="calendarGrid" class="calendar-Grid"></div>
+                       
+                </div>
+            </section>
+         </main>
+         <!-- =================RIGHT NAV=================          -->
+          <aside class="sidebarChat" id="chatPanel">
+            <header class="chatHeader">
+                <h3>Chat</h3>
+                <button id="closeChat">X</button>
+            </header>
+            <footer class="chat-input">
+                <input type="text" placeholder="Message..." disabled>
+            </footer>
+          </aside>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
