@@ -6,6 +6,7 @@
 
 .appShell{
     display: grid;
+<<<<<<< HEAD
     grid-template-columns: 280px 1fr 320px;
     min-height: 100vh;
 }
@@ -15,15 +16,68 @@
     padding: 16px;
     border-right: 1px solid rgba(0, 0, 0, 0.08);
 }
+=======
+    grid-template-columns: 260px 1fr 320px;
+    min-height: 100vh;
+}
+.appShell.is-collapsed{
+    grid-template-columns: 80px 1fr 320px;
+}
+
+.leftSideBar{
+    width: 260px;
+    padding: 16px;
+    /* border-right: 1px solid rgba(0, 0, 0, 0.08); */
+    transition: width 240ms ease;
+    background-color: #f8fafd;
+}
+.leftSideBar .sidebarContent{
+    margin-top: 12px;
+    transition: transform 180ms ease, opacity 180ms ease;
+}
+.appShell.is-collapsed .leftSideBar{
+    width: 60px;
+    padding: 8px;
+}
+.appShell.is-collapsed .sidebarContent {
+    align-items: center;
+}
+.appShell.is-collapsed .leftSideBar .sidebarContent{
+    transform: none;
+    opacity: 1;
+    pointer-events: none;
+}
+.leftSideBar .sidebarNav {
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+  .appShell.is-collapsed .leftSideBar .sidebarNav {
+    transform: translateX(-16px);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .sidebarContent{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
 .brand{
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 .logo{
+<<<<<<< HEAD
     margin: 0 0 14px 0;
     letter-spacing: 2px;
     font-family: "Rampart One", sans-serif;
+=======
+    margin: 0 0 16px 14px;
+    letter-spacing: 2px;
+    font-family: "Rampart One", sans-serif;
+    width: 100%;
+    
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
 }
 .openSidebar{
     border: none;
@@ -33,6 +87,7 @@
     width: 40px;
     border-radius: 50%;
     cursor: pointer;
+<<<<<<< HEAD
     margin-left: auto;
     display: inline-flex;
     align-items: center;
@@ -40,6 +95,19 @@
     transform: translateY(-15px);
 }
 
+=======
+    margin-left: -2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-5px);
+    flex-shrink: 0;
+}
+.appShell.is-collapsed .openSidebar{
+    height: 40px;
+    width: 40px;
+}
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
 .openSidebar i {
     font-size: 18px;
 }
@@ -49,13 +117,19 @@
     align-items: center;
     gap: 10px;
     padding: 12px 16px;
+<<<<<<< HEAD
     margin-left: 5px;
+=======
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
     background: #fff;
     background-color: rgb(239, 239, 239);
     border: 1px solid #dfe1e5;
     border-radius: 999px;
+<<<<<<< HEAD
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+=======
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
     font-family: "Rampart One", sans-serif;
     font-weight: 600;
     cursor: pointer;
@@ -77,7 +151,12 @@
     transform: translateY(1px);
     box-shadow: 0 1px 2px rgba(60, 64, 67, 0.35), 0 2px 6px rgba(60, 64, 67, 0.2);
 }
+<<<<<<< HEAD
 #createBttn i{
+=======
+#createBttn i,
+.nav i{
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -93,10 +172,62 @@
     font-size: 20px;
     letter-spacing: 0.1px;
 }
+<<<<<<< HEAD
 
 
 /* =================DASHBOARD================= */
 
+=======
+.nav a,
+.nav-Group,
+.nav-sublink {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-family: "Rampart One",sans-serif;
+    text-decoration: none;
+    text-decoration: none;
+    color: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+.appShell.is-collapsed #createBttn,
+.appShell.is-collapsed .nav a,
+.appShell.is-collapsed .nav-Group,
+.appShell.is-collapsed .nav-sublink {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+}
+.appShell.is-collapsed #createBttn span,
+.appShell.is-collapsed .nav a span,
+.appShell.is-collapsed .nav-Group span,
+.appShell.is-collapsed .nav-sublink span {
+    display: none;
+}
+
+.appShell.is-collapsed .nav-group-items {
+    display: none;
+  }
+  .appShell.is-collapsed #createBttn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    transform: 0;
+  }
+/* =================DASHBOARD================= */
+.main{
+    padding-top: 32px;
+}
+#dashboard .container {
+    margin-top: 40px;
+}
+>>>>>>> 0c4866f (Added collapsible sidebar navigation)
 section {
     display: flex;
     flex-direction: column;
