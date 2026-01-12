@@ -27,11 +27,18 @@
                     <i class="fa-regular fa-calendar-plus"></i>
                     <span>Make Plans</span>
                 </button>
+                <!-- home -->
                 <nav class="nav">
                     <a class="nav-link" href="#dashBoard"> <i class="fa-regular fa-house"></i>
                     <span>Home</span></a>
-                    <button class="nav-Group" type="button" data-collapse="plans">
-                     <span class="downArrow">Plans<i class="fa-solid fa-people-pulling"></i></span>
+                    <!-- plans -->
+                    <button class="nav-Group" type="button" data-collapse="plans" aria-expanded="false">
+                     <span class="group-left">
+                        <i class="fa-regular fa-clock"></i>
+                        <span class="downArrow">Plans</span>
+                    </span>
+                    <i class="fa-solid fa-angle-down group-chev"></i>
+                    <i class="fa-regular fa-clock group-alt"></i>
                     </button>
                     <div class="nav-group-items" id="collapse-plans">
                         <a class="nav-sublink" href="#current-plans"><i class="fa-solid fa-person-circle-check"></i>
@@ -44,9 +51,26 @@
                         <span>
                             Calendar
                         </span></a>
-                      <a class="nav-link" href="#friends"><i class="fa-solid fa-user-group"></i>
-                        <span>Friends</span></a>
-                      <a class="nav-link" href="#setting"><i class="fa-solid fa-gear"></i></a>
+                        <!-- friends -->
+                        <button class="nav-Group" type="button" data-collapse="friends" aria-expanded="false">
+                            <span class="group-left">
+                                <i class="fa-solid fa-user-group"></i>
+                                <span class="downArrow">Friends</span>
+                            </span>
+                            <i class="fa-solid fa-angle-down group-chev"></i>
+                            <i class="fa-solid fa-user-group group-alt"></i>
+                        </button>
+                        <div class="nav-group-items" id="collapse-friends">
+                            <a class="nav-sublink" href="#friends-requests">
+                                <i class="fa-solid fa-user-plus"></i><span>Requests</span>
+                            </a>
+                            <a class="nav-sublink" href="#friends-all"><i class="fa-regular fa-circle-user"></i>
+                                <span>All Friends</span></a>
+                            </div>
+                            <!-- Setting Gear -->
+                            <div class="nav-footer">
+                                <button class="navSetting"><i class="fa-solid fa-gear"></i></button>
+                            </div>
                 </nav>
             </div>
          </aside>

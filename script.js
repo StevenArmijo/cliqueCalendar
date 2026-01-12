@@ -17,4 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleBtn.addEventListener("click", () => {
     appShell.classList.toggle("is-collapsed");
   });
+
+  // Dropdown-like nav groups
+  const navGroups = document.querySelectorAll(".nav-Group");
+  navGroups.forEach(btn => {
+    const panel = btn.nextElementSibling;
+    if (!panel || !panel.classList.contains("nav-group-items")) return;
+
+    btn.addEventListener("click", () => {
+      const isOpen = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!isOpen));
+      panel.classList.toggle("is-open", !isOpen);
+    });
+  });
 });
