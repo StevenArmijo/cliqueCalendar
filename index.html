@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/20adcc27b8.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="appShell">
+    <div class="appShell is-collapsed chat-collapsed">
         <!-- =================LEFT NAV================= -->
          <aside class="leftSideBar">
             <div class="brand">
@@ -80,8 +80,8 @@
                 <div class="container">
                     <div class="statsContainer">
                        <div class="details">
-                             <h2>
-                               Current Plans
+                             <h2 class="futurePlans">
+                              Create Plans
                              </h2>
                              <p>Party Confirmed</p>
                              <div id="progressBar">
@@ -105,24 +105,9 @@
             
                     </button>
                 </form>
-                <!-- <div id="mainContainer">
+                <div id="mainContainer">
+                </div>
                     <div class="todoContainer">
-                        <ul class="toDos"> 
-                            <li>
-                                <div class="buttonContainer">
-                                    <button class="iconButton">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="iconButton">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>              
-                                   
-                                </div>
-                                
-                            </li>
-                        </ul>
-                    </div>
-                </div> -->
                 <div id="taskUpdate">
                     <div class="applyBttn">
                         <button type="submit" class="checkBttn"> Confirm </button>
@@ -161,13 +146,73 @@
          <!-- =================RIGHT NAV=================          -->
           <aside class="sidebarChat" id="chatPanel">
             <header class="chatHeader">
-                <h3>Chat</h3>
                 <button id="closeChat">X</button>
+                <h3>Inbox</h3>
+                <div class="new-chat-btn">
+                    <button class="newChat"><i class="fa-regular fa-message"></i></button>
+                    <span class="new-chat">New Chat</span>
+                </div>
             </header>
             <footer class="chat-input">
                 <input type="text" placeholder="Message..." disabled>
             </footer>
           </aside>
+    </div>
+    <!-- ==============MINI MODAL FOR CREATE PLANS=========== -->
+    <div  class="modal-hidden" id="eventModal" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close">x
+            </button>
+            <form id="eventForm">
+                <div class="taskField">
+                    <input type="text" id="eventTitle" placeholder="Add Task or Event" />
+                    <span class="titleUnderline"></span>
+                </div>
+                <div class="dateBlock">
+                    <span id="dateHolder">Date</span>
+                    <div class="selectDates">
+                        <span id="clockEmblm"><i class="fa-regular fa-clock"></i></span>
+                        <button class="datePicker leftDatePicker" type="button">Friday, December 12</button>
+                        <span id="dash"><i class="fa-solid fa-minus"></i></span>
+                        <button class="datePicker" type="button">Friday, December 12</button>
+                    </div>
+                    <div class="miniCalendar">
+                        <nav class="calendar-header">
+                            <button id="miniPrev" class="calendarButton">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h3  id="miniMonthLabel">November</h3>    
+                            <button id="miniNext" class="calendarButton">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>            
+                        </nav>
+                        <div class="weekdayRow">
+                            <span>Sun</span>
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                        </div>
+                        <div id="miniGrid" class="calendar-Grid"></div> 
+                    </div>
+                </div>
+                <div class="descriptionBox">
+                    <span class="menuBar"><i class="fa-solid fa-bars"></i></span>
+                    <textarea name="descripBox" id="descripBox" placeholder="Add Description"></textarea>
+                    <span class="descUnderline"></span>
+                </div>
+                <div class="buttonHolder">
+                    <button class="popUpBttn">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <button type="submit">Save</button>
+                </div>
+                </form>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
