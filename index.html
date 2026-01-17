@@ -23,14 +23,16 @@
                 </h1>
             </div>
             <div class="sidebarContent">
-                <button class="createBttn" id="createBttn">
+                <button class="createBttn" id="createBttn" type="button">
                     <i class="fa-regular fa-calendar-plus"></i>
                     <span>Make Plans</span>
                 </button>
                 <!-- home -->
                 <nav class="nav">
-                    <a class="nav-link" href="#dashBoard"> <i class="fa-regular fa-house"></i>
-                    <span>Home</span></a>
+                    <a class="nav-link" href="#dashboard" data-view="dashboard"> 
+                        <i class="fa-regular fa-house"></i>
+                        <span>Home</span>
+                    </a>
                     <!-- plans -->
                     <button class="nav-Group" type="button" data-collapse="plans" aria-expanded="false">
                      <span class="group-left">
@@ -41,12 +43,12 @@
                     <i class="fa-regular fa-clock group-alt"></i>
                     </button>
                     <div class="nav-group-items" id="collapse-plans">
-                        <a class="nav-sublink" href="#current-plans"><i class="fa-solid fa-person-circle-check"></i>
-                            <span>Current</span></a>
-                        <a class="nav-sublink" href="#pending-plans"><i class="fa-solid fa-hourglass-half"></i>
-                            <span>Pending</span></a>
+                        <button class="nav-sublink" type="button" data-view="plans" data-subview="current"><i class="fa-solid fa-person-circle-check"></i>
+                          <span>Current</span></button>
+                        <button class="nav-sublink" data-view="plans" type="button" data-subview="pending"><i class="fa-solid fa-hourglass-half"></i>
+                            <span>Pending</span></button>
                       </div>
-                      <a class="nav-link" href="#calendar">
+                      <a class="nav-link" href="#calendar" data-view="calendar">
                         <i class="fa-solid fa-calendar-day"></i>
                         <span>
                             Calendar
@@ -61,29 +63,33 @@
                             <i class="fa-solid fa-user-group group-alt"></i>
                         </button>
                         <div class="nav-group-items" id="collapse-friends">
-                            <a class="nav-sublink" href="#friends-requests">
+                            <button class="nav-sublink" type="button" data-view="friends" data-subview="requests">
                                 <i class="fa-solid fa-user-plus"></i><span>Requests</span>
-                            </a>
-                            <a class="nav-sublink" href="#friends-all"><i class="fa-regular fa-circle-user"></i>
-                                <span>All Friends</span></a>
+                            </button>
+                            <button class="nav-sublink" type="button" data-view="friends" data-subview="all"><i class="fa-regular fa-circle-user"></i>
+                                <span>All Friends</span>
+                            </button>
                             </div>
                             <!-- Setting Gear -->
                             <div class="nav-footer">
-                                <button class="navSetting"><i class="fa-solid fa-gear"></i></button>
+                                <button class="navSetting" type="button" data-view="setting" aria-label="Settings">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
                             </div>
                 </nav>
             </div>
          </aside>
          <!-- =================DASHBOARD================= -->
          <main class="main">
-            <section id="dashboard" class="section">
+            <section id="dashboard" class="view is-active">
                 <div class="container">
                     <div class="statsContainer">
                        <div class="details">
-                             <h2 class="futurePlans">
+                             <h2 class="futurePlans" id="dashPlanTitle">
                               Create Plans
                              </h2>
-                             <p>Party Confirmed</p>
+                             <p id="dashPlanDates"> No Dates Yet</p>
+                             <p id="confirmedAttendance">Party Confirmed</p>
                              <div id="progressBar">
                                  <div class="progressFill"></div>
                              </div>
@@ -95,30 +101,31 @@
                          </div>
                      </div> 
                  </div>
-            </section>
-            <!-- =================ADD PEOPLE INPUT================= -->
-            <section id="addPeople" class="section">
-                <form class="inviteForm">
+                 <form class="inviteForm">
                     <input type="text" name="" id="todo-input" placeholder="who pullling up">
                     <button type="submit" id="todo-button">
                         Invite
-            
                     </button>
                 </form>
-                <div id="mainContainer">
-                </div>
-                    <div class="todoContainer">
-                <div id="taskUpdate">
-                    <div class="applyBttn">
-                        <button type="submit" class="checkBttn"> Confirm </button>
-                    </div>
-                    <div class="clearTask">
-                        <button type="submit" class="clearBttn"> Not Going </button>
+                <div id="mainContainer"></div>
+                <div class="todoContainer">
+                    <div id="taskUpdate">
+                        <div class="applyBttn">
+                            <button type="button" class="checkBttn"> Confirm </button>
+                        </div>
+                        <div class="clearTask">
+                            <button type="button" class="clearBttn"> Not Going </button>
+                        </div>
                     </div>
                 </div>        
             </section>
+            <!-- =================ADD PEOPLE INPUT================= -->
+            <section id="friends" class="view">
+                <h2>Friends</h2>
+                <p>Coming Soon</p>
+            </section>
             <!-- =================CALENDAR================= -->
-            <section id="calendar" class="section">
+            <section id="calendar" class="view">
                 <div class="calendar">
                     <nav class="calendar-header">
                         <button id="prevMonth" class="calendarButton">
@@ -142,6 +149,22 @@
                        
                 </div>
             </section>
+            <!-- =================PLANS PAGE=================          --> 
+            <section id="plans" class="view">
+               <!-- placeholder will fill in -->
+                <h2>Plans</h2>
+                <p>coming soon</p>
+            </section>
+             <!-- =================SETTINGS PAGE=================          -->
+              <section id="setting" class="view">
+               <h2>Setting</h2>
+               <p>Coming Soon</p>
+              </section>
+              <!-- ===================Message Page================= -->
+              <section id="message" class="view">
+                <h2>Chat</h2>
+                <p>Coming Soon</p>
+               </section>
          </main>
          <!-- =================RIGHT NAV=================          -->
           <aside class="sidebarChat" id="chatPanel">
@@ -162,20 +185,22 @@
     <div  class="modal-hidden" id="eventModal" aria-hidden="true">
         <div class="modal-backdrop"></div>
         <div class="modal-content">
-            <button class="modal-close">x
-            </button>
+            <button class="modal-close">x</button>
             <form id="eventForm">
                 <div class="taskField">
                     <input type="text" id="eventTitle" placeholder="Add Task or Event" />
                     <span class="titleUnderline"></span>
                 </div>
-                <div class="dateBlock">
-                    <span id="dateHolder">Date</span>
+                <div class="infoBlock">
+                    <div class="locationPicker">
+                        <span id="locEmblm"><i class="fa-solid fa-location-dot"></i></span>
+                        <button class="locationBtn" type="button">Add Location</button>
+                    </div>
                     <div class="selectDates">
                         <span id="clockEmblm"><i class="fa-regular fa-clock"></i></span>
-                        <button class="datePicker leftDatePicker" type="button">Friday, December 12</button>
+                        <button class="datePicker leftDatePicker" data-date-role="start" type="button"><span id="startDateHolder">Date</span></button>
                         <span id="dash"><i class="fa-solid fa-minus"></i></span>
-                        <button class="datePicker" type="button">Friday, December 12</button>
+                        <button class="datePicker" data-date-role="end" type="button"><span id="endDateHolder">Date</span></button>
                     </div>
                     <div class="miniCalendar">
                         <nav class="calendar-header">
@@ -205,16 +230,33 @@
                     <span class="descUnderline"></span>
                 </div>
                 <div class="buttonHolder">
-                    <button class="popUpBttn">
+                    <button class="popUpBttn" type="button">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                     <button type="submit">Save</button>
                 </div>
                 </form>
         </div>
-
     </div>
+    <nav class="mobileNav" aria-label="Mobile Navigation">
+        <a href="#dashboard" class="mobileNav_item" aria-label="dashboard">
+            <i class="fa-solid fa-house"></i>
+        </a>
+        <a href="#calendar" class="mobileNav_item" aria-label="Calendar">
+            <i class="fa-solid fa-calendar-day"></i>
+        </a>
+        <a href="#friends" class="mobileNav_item" data-view="friends" aria-label="Friends">
+            <i class="fa-solid fa-user-group"></i>
+        </a>
+        <button class="mobileNav_item" type="button" data-view="setting" aria-label="Setting">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+        <button class="mobileNav_item" type="button" data-view="message" aria-label="Message">
+            <i class="fa-regular fa-message"></i>
+        </button>
+    </nav>
 
     <script src="script.js"></script>
 </body>
 </html>
+

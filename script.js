@@ -2,6 +2,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.querySelector(".openSidebar");
   const appShell = document.querySelector(".appShell");
 
+// =================VIEW ROUTER=================
+  const views = Array.from(document.querySelectorAll(".view"));
+
+  function showView(viewId) {
+    views.forEach((v)=> v.classList.remove("is-active"));
+    document.getElementById(viewId)?.classList.add("is-active");
+
+    document.querySelectorAll(".mobileNav_item").forEach((el) => {
+        const target = el.dataset.view;
+        el.classList.toggle("is-active", target === viewId);
+      });
+  }
+  function parseHash() {
+    const raw = window.location.hash.replace("#","").trim();
+    if(!raw) return { view: "dashboard", subview: null };
+
+    const [view, subview] = raw.split ("/");
+    return { view,subview: subview || null }; 
+  }
+
+  function setHash(view, subview = null) {
+    const next=subview ? `#${view}/${subview}` : `#${view}`;
+    history.pushState(null, "", next);
+  }
+  function routeFromHash() {
+    const { view } = parseHash();
+    const exists = document.getElementById(view);
+    showView(exists ? view : "dashboard");
+  }
+
+
+  routeFromHash();
+
+  document.querySelectorAll("[data-view]").forEach((el)=> {
+    el.addEventListener("click", (e) => {
+        e.preventDefault();
+        const view = el.dataset.view;
+        const subview = el.dataset.subview || null;
+
+        showView(view);
+        setHash(view, subview);
+    });
+  });
+
+  window.addEventListener("popstate", routeFromHash);
+
   if (toggleBtn && appShell) {
     toggleBtn.addEventListener("click", () => {
       appShell.classList.toggle("is-collapsed");
@@ -9,10 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Clicking any nav item/button should open the sidebar
-  const navTriggers = document.querySelectorAll(".nav a, .nav-Group, .nav-sublink, #createBttn, .navSetting");
+  const navTriggers = document.querySelectorAll(".nav a, .nav-sublink, .navSetting");
   const openSidebar = () => appShell?.classList.remove("is-collapsed");
   navTriggers.forEach((el) => {
-    el.addEventListener("click", openSidebar);
+    el.addEventListener("click",() =>
+    appShell?.classList.remove("is-collapsed"));
   });
 
   // Dropdown-like nav groups
@@ -28,9 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-document.addEventListener("DOMContentLoaded", () => {
-  // ...your existing code...
-  
+
   const closeChat = document.getElementById("closeChat");
   const newChat = document.querySelector(".newChat");
   const chatPanel = document.getElementById("chatPanel");
@@ -47,10 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (newChat && chatPanel) {
     newChat.addEventListener("click", toggleChat);
   }
-});
+
 // =================DASHBOARD=================
 
-const form = document.querySelector("form");
+const form = document.querySelector(".inviteForm");
 const input = document.querySelector("#todo-input");
 const container = document.querySelector("#mainContainer");
 const numbersDisplay = document.querySelector("#numbers");
@@ -363,6 +408,12 @@ renderCalendar();
 const createButton = document.getElementById("createBttn");
 createButton?.addEventListener("click", (e) => {
     e.preventDefault();
+    const mobileCreate = document.getElementById("mobileCreate");
+    mobileCreate?.addEventListener("click", (e) => {
+     e.preventDefault();
+    openModal(selectedDay, null);
+});
+
     // keep using the currently selected day; default is today
     openModal(selectedDay, null);
 });
@@ -372,7 +423,9 @@ const modalClose = document.querySelector(".modal-close");
 const eventForm = document.getElementById("eventForm");
 const eventTitleInput = document.getElementById("eventTitle");
 const eventDescInput = document.getElementById("descripBox");
-const dateHolder = document.getElementById("dateHolder");
+
+const startDateHolder = document.getElementById("startDateHolder");
+const endDateHolder = document.getElementById("endDateHolder");
 
 const miniCalendar = document.querySelector(".miniCalendar");
 const miniGrid = document.getElementById("miniGrid");
@@ -385,174 +438,250 @@ let miniYear = currentYear;
 let miniMonth = currentMonth;
 let lastFocusedElement = null;
 
-function formatKey(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+let startDate = new Date(selectedDay);
+let endDate = new Date(selectedDay);
+let activeDateRole = "start";
+
+// ---------- helpers ----------
+function clampToMidnight(d) {
+  const copy = new Date(d);
+  copy.setHours(0, 0, 0, 0);
+  return copy;
 }
 
-function formatPretty(date) {
-    return date.toLocaleDateString(undefined, {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-    });
+function addDays(date, amount) {
+  const copy = new Date(date);
+  copy.setDate(copy.getDate() + amount);
+  return copy;
 }
 
+function eachDayBetween(start, end) {
+  const days = [];
+  let cur = clampToMidnight(start);
+  const last = clampToMidnight(end);
+
+  while (cur <= last) {
+    days.push(new Date(cur));
+    cur = addDays(cur, 1);
+  }
+  return days;
+}
+
+function formatMonthDay(date) {
+  return date.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+}
+
+function renderDateRangeLabels() {
+  if (startDateHolder) startDateHolder.textContent = formatMonthDay(startDate);
+  if (endDateHolder) endDateHolder.textContent = formatMonthDay(endDate);
+}
+
+function fromISOKey(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// keep ONE formatKey in your whole file
+
+
+// ---------- modal ----------
 function openModal(date, eventId = null) {
-    if (!eventModal) return;
-    editingEventId = eventId;
-    lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    eventModal.classList.remove("modal-hidden");
-    eventModal.setAttribute("aria-hidden", "false");
+  if (!eventModal) return;
 
-    if (dateHolder) dateHolder.textContent = formatPretty(date);
+  editingEventId = eventId;
+  lastFocusedElement =
+    document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
-    const key = formatKey(date);
-    const entries = eventsByDate[key] || [];
-    const current = eventId ? entries.find((e) => e.id === eventId) : null;
+  eventModal.classList.remove("modal-hidden");
+  eventModal.setAttribute("aria-hidden", "false");
 
-    if (eventTitleInput) eventTitleInput.value = current?.title ?? "";
-    if (eventDescInput) eventDescInput.value = current?.description ?? "";
+  // default range = clicked day
+  startDate = new Date(date);
+  endDate = new Date(date);
 
-    miniCalendar?.classList.add("modal-hidden");
-    eventTitleInput?.focus();
+  const key = formatKey(date);
+  const entries = eventsByDate[key] || [];
+  const current = eventId ? entries.find((e) => e.id === eventId) : null;
+
+  // load saved range if editing
+  if (current?.startKey) startDate = fromISOKey(current.startKey);
+  if (current?.endKey) endDate = fromISOKey(current.endKey);
+  if (endDate < startDate) endDate = new Date(startDate);
+
+  renderDateRangeLabels();
+
+  if (eventTitleInput) eventTitleInput.value = current?.title ?? "";
+  if (eventDescInput) eventDescInput.value = current?.description ?? "";
+
+  miniCalendar?.classList.add("modal-hidden");
+  eventTitleInput?.focus();
 }
 
 function closeModal() {
-    if (!eventModal) return;
+  if (!eventModal) return;
+  eventModal.classList.add("modal-hidden");
+  eventModal.setAttribute("aria-hidden", "true");
+  miniCalendar?.classList.add("modal-hidden");
 
-    eventModal.classList.add("modal-hidden");
-    eventModal.setAttribute("aria-hidden", "true");
-    miniCalendar?.classList.add("modal-hidden");
-
-    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-    lastFocusedElement?.focus?.();
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  lastFocusedElement?.focus?.();
 }
 
 modalClose?.addEventListener("click", (e) => {
-    e.preventDefault();
-    closeModal();
+  e.preventDefault();
+  closeModal();
 });
 
 eventModal?.addEventListener("click", (e) => {
-    if (e.target instanceof HTMLElement && e.target.classList.contains("modal-backdrop")) {
-        closeModal();
-    }
+  if (e.target instanceof HTMLElement && e.target.classList.contains("modal-backdrop")) {
+    closeModal();
+  }
 });
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && eventModal && !eventModal.classList.contains("modal-hidden")) {
-        closeModal();
-    }
-});
-
-eventForm?.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const title = eventTitleInput?.value.trim() ?? "";
-    const description = eventDescInput?.value.trim() ?? "";
-    const key = formatKey(selectedDay);
-
-    const detailsHeading = document.querySelector(".futurePlans");
-    if (detailsHeading) {
-      detailsHeading.textContent = title || "Create Plans";
-    }
-    if (!title && !description) {
-        closeModal();
-        return;
-    }
-
-    if (!eventsByDate[key]) eventsByDate[key] = [];
-
-    if (editingEventId) {
-        const idx = eventsByDate[key].findIndex((evt) => evt.id === editingEventId);
-        if (idx !== -1) {
-            eventsByDate[key][idx] = { ...eventsByDate[key][idx], title, description };
-        }
-    } else {
-        eventsByDate[key].push({ id: makeId(), title, description });
-    }
-
-    editingEventId = null;
+  if (e.key === "Escape" && eventModal && !eventModal.classList.contains("modal-hidden")) {
     closeModal();
-    renderCalendar();
+  }
 });
-//delteButton
+
+// ---------- submit (spread across range) ----------
+eventForm?.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const title = eventTitleInput?.value.trim() ?? "";
+  const description = eventDescInput?.value.trim() ?? "";
+
+  const detailsHeading = document.querySelector(".futurePlans");
+  if (detailsHeading) detailsHeading.textContent = title || "Create Plans";
+
+  const dashTitle = document.getElementById("dashPlanTitle");
+  const dashDates = document.getElementById("dashPlanDates");
+  if (dashTitle) dashTitle.textContent = title || "Create Plans";
+  if (dashDates) dashDates.textContent = `${formatMonthDay(startDate)} — ${formatMonthDay(endDate)}`;
+
+  if (!title && !description) {
+    closeModal();
+    return;
+  }
+
+  // remove old copies if editing
+  if (editingEventId) {
+    Object.keys(eventsByDate).forEach((key) => {
+      eventsByDate[key] = (eventsByDate[key] || []).filter(
+        (evt) => evt.id !== editingEventId
+      );
+      if (!eventsByDate[key].length) delete eventsByDate[key];
+    });
+  }
+
+  const id = editingEventId || makeId();
+
+  eachDayBetween(startDate, endDate).forEach((d) => {
+    const key = formatKey(d);
+    if (!eventsByDate[key]) eventsByDate[key] = [];
+    eventsByDate[key].push({
+      id,
+      title,
+      description,
+      startKey: formatKey(startDate),
+      endKey: formatKey(endDate),
+    });
+  });
+
+  editingEventId = null;
+  closeModal();
+  renderCalendar();
+});
+
+// ---------- delete (remove from all dates) ----------
 const deleteBtn = document.querySelector(".popUpBttn");
 deleteBtn?.addEventListener("click", (e) => {
-    e.preventDefault();
-    if(!editingEventId) return;
-    const key = formatKey(selectedDay)
-    const list = eventsByDate[key] || [];
-    const next = list.filter(evt => evt.id !== editingEventId);
-    if (next.length) {
-        eventsByDate[key] = next;
-    } else {
-        delete eventsByDate[key]
-    }
-    editingEventId = null;
-    closeModal();
-    renderCalendar();
-})
+  e.preventDefault();
+  if (!editingEventId) return;
 
+  Object.keys(eventsByDate).forEach((key) => {
+    eventsByDate[key] = (eventsByDate[key] || []).filter(
+      (evt) => evt.id !== editingEventId
+    );
+    if (!eventsByDate[key].length) delete eventsByDate[key];
+  });
 
+  editingEventId = null;
+  closeModal();
+  renderCalendar();
+});
+
+// ---------- mini calendar rendering ----------
 function renderMiniCalendar() {
-    if (!miniGrid || !miniMonthLabel) return;
+  if (!miniGrid || !miniMonthLabel) return;
 
-    miniMonthLabel.textContent = `${monthNames[miniMonth]} ${miniYear}`;
-    miniGrid.innerHTML = "";
+  miniMonthLabel.textContent = `${monthNames[miniMonth]} ${miniYear}`;
+  miniGrid.innerHTML = "";
 
-    const days = buildDays(miniYear, miniMonth);
-    days.forEach((day) => {
-        const cell = document.createElement("div");
-        cell.className = "dayCell";
-        if (!day.inCurrentMonth) cell.classList.add("otherMonth");
+  const days = buildDays(miniYear, miniMonth);
 
-        const number = document.createElement("div");
-        number.className = "dayNumber";
-        number.textContent = day.date.getDate();
-        cell.appendChild(number);
+  days.forEach((day) => {
+    const cell = document.createElement("div");
+    cell.className = "dayCell";
+    if (!day.inCurrentMonth) cell.classList.add("otherMonth");
 
-        cell.addEventListener("click", () => {
-            selectedDay = day.date;
-            miniCalendar?.classList.add("modal-hidden");
-            renderCalendar();
-            openModal(selectedDay);
-        });
+    const number = document.createElement("div");
+    number.className = "dayNumber";
+    number.textContent = day.date.getDate();
+    cell.appendChild(number);
 
-        miniGrid.appendChild(cell);
+    // IMPORTANT: pick start/end here, not outside
+    cell.addEventListener("click", () => {
+      const picked = day.date;
+
+      if (activeDateRole === "start") {
+        startDate = new Date(picked);
+        if (endDate < startDate) endDate = new Date(startDate);
+      } else {
+        endDate = new Date(picked);
+        if (endDate < startDate) startDate = new Date(endDate);
+      }
+
+      renderDateRangeLabels();
+      miniCalendar?.classList.add("modal-hidden");
     });
+    
+    miniGrid.appendChild(cell);
+  });
 }
 
+// open mini calendar and set which role is active
 datePickers.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        miniCalendar?.classList.toggle("modal-hidden");
-        miniMonth = selectedDay.getMonth();
-        miniYear = selectedDay.getFullYear();
-        renderMiniCalendar();
-    });
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    activeDateRole = btn.dataset.dateRole || "start";
+    miniCalendar?.classList.toggle("modal-hidden");
+
+    const base = activeDateRole === "end" ? endDate : startDate;
+    miniMonth = base.getMonth();
+    miniYear = base.getFullYear();
+
+    renderMiniCalendar();
+  });
 });
 
 miniPrev?.addEventListener("click", (e) => {
-    e.preventDefault();
-    miniMonth--;
-    if (miniMonth < 0) {
-        miniMonth = 11;
-        miniYear--;
-    }
-    renderMiniCalendar();
+  e.preventDefault();
+  miniMonth--;
+  if (miniMonth < 0) {
+    miniMonth = 11;
+    miniYear--;
+  }
+  renderMiniCalendar();
 });
 
 miniNext?.addEventListener("click", (e) => {
-    e.preventDefault();
-    miniMonth++;
-    if (miniMonth > 11) {
-        miniMonth = 0;
-        miniYear++;
-    }
-    renderMiniCalendar();
+  e.preventDefault();
+  miniMonth++;
+  if (miniMonth > 11) {
+    miniMonth = 0;
+    miniYear++;
+  }
+  renderMiniCalendar();
 });
